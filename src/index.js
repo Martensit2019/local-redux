@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
-import { completeTask, titleChanged, taskDeleted, getTasks, getTasksLoadingStatus, loadTasks } from './store/task'
+import { completeTask, titleChanged, taskDeleted, taskAdd, getTasks, getTasksLoadingStatus, loadTasks } from './store/task'
 import configureStore from './store/store'
 import { Provider, useDispatch, useSelector } from 'react-redux'
 import { getError } from './store/errors'
@@ -9,7 +9,7 @@ const store = configureStore()
 
 const App = () => {
   const state = useSelector(getTasks())
-  const isLoading = useSelector(getTasksLoadingStatus())  
+  const isLoading = useSelector(getTasksLoadingStatus())
   const error = useSelector(getError())
   const dispatch = useDispatch()
 
@@ -24,17 +24,23 @@ const App = () => {
   const deleteTask = (taskId) => {
     dispatch(taskDeleted(taskId))
   }
+  const addTask = (payload) => {
+    dispatch(taskAdd(payload))
+  }
   if (isLoading) {
     return <h1>Loading...</h1>
   }
-  if(error){
+  if (error) {
     return <p>{error}</p>
   }
 
   return (
     <>
       <h1>App</h1>
-
+      <button onClick={() => addTask({
+      title: 'New Task',
+      completed: false
+    })}>Add task</button>
       <ul>
         {state.map((el) => (
           <li key={el.id}>
